@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        ul {
+            list-style: none;
+
+        }
+        /* ul li{
+            border-bottom: 1px solid red;
+            display: flex;
+        } */
+        
+    </style>
+</head>
+
+<body>
+    network socket nodejs
+   
+    <a href="">
+        http://10.17.2.3:3005/
+    </a> [socket]
+    <br>
+    Room ID: <input type="text" id="createroom_id">
+    <!-- <button onclick="createroom()">create</button> -->
+    <br>
+   
+    Name : <input type="text" id="name"><button onclick="joinroom()" id="btn_join">join</button>
+    <ul id="messages"></ul>
+    <textarea name="" id="input" cols="30" rows="10"></textarea>
+    <!-- <input type="text" id="input"> -->
+    <button onclick="send()" id="btn_send">send</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        var input = document.getElementById('input');
+        var room = document.getElementById('createroom_id').value;
+        var name = document.getElementById('name').value;
+        var message = document.getElementById('messages');
+        // var input = document.getElementById("myInput");
+        // Execute a function when the user presses a key on the keyboard
+        input.addEventListener("keypress", function (event) {
+            // If the user presses the "Enter" key on the keyboard
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                send();
+            }
+        });
+        function send() {
+            var room = document.getElementById('createroom_id').value;
+            if(document.getElementById('input').value == ""){
+                return
+            }
+            var data = {
+                name: document.getElementById('name').value,
+                msg: document.getElementById('input').value
+            }
+            socket.emit(room, data);
+            console.log(room, data);
+            document.getElementById('input').value = '';
+        }
+
+        function joinroom() {
+            var room = document.getElementById('createroom_id').value;
+            var data = {
+                name: document.getElementById('name').value,
+                room: document.getElementById('createroom_id').value,
+            }
+            console.log('joining')
+            socket.emit('Create room ID', data, (response) => {
+                console.log(response.status);
+                if (response.status == 200) {
+                    document.getElementById('createroom_id').disabled = true;
+                    document.getElementById('btn_join').disabled = true;
+                    document.getElementById('name').disabled = true;
+                }
+            });
+            console.log("Joined");
+            socket.on(room, function (res) {
+                var item = document.createElement('li');
+                var textarea = document.createElement('textarea');
+                textarea.textContent = `${res.msg}`;
+                textarea.disabled = true;
+                var div_name = document.createElement('div');
+                div_name.textContent = `${res.name} : `;
+                div_name.appendChild(textarea);
+                item.appendChild(div_name);
+                message.appendChild(item);
+                window.scrollTo(0, document.body.scrollHeight);
+                console.log("received :", res)
+            });
+        }
+        // socket.emit('chat message', "hello");
+    </script>
+</body>
+
+</html>
