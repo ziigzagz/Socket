@@ -4,4 +4,4 @@ ref : https://socket.io/docs/v4/
 
 
 
-![Screenshot](img\Screenshot 2022-08-06 160447.png)
+![Screenshot](https://github.com/ziigzagz/Socket/blob/main/img/Screenshot%202022-08-06%20160447.png?raw=true)
