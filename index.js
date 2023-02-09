@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected')
-  
+
   socket.on('disconnect', () => {
     console.log(`user is disconnected`)
   })
@@ -27,7 +27,6 @@ io.on('connection', (socket) => {
       io.emit(res.room, data)
     })
   })
-
   // socket.on("private message", (anotherSocketId, msg) => {
   //   socket.to(anotherSocketId).emit("private message", socket.id, msg);
   //   console.log(anotherSocketId)
