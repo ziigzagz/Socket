@@ -43,5 +43,5 @@ io.of('/').adapter.on('join-room', (room, id) => {
 })
 
 server.listen({ port: port, host: host }, () => {
-  console.log('listening on *:3000')
+  console.log(`listening on *:${port}`)
 })
