@@ -5,34 +5,63 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>LiveChat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
-        ul {
-            list-style: none;
-
+        #messages{
+            max-height: 200px;
+    overflow-y: scroll;
+    overflow-wrap: anywhere;
         }
-        /* ul li{
-            border-bottom: 1px solid red;
-            display: flex;
-        } */
-        
     </style>
 </head>
 
 <body>
-    network socket nodejs
-    <br>
-    Room ID: <input type="text" id="createroom_id">
-    <!-- <button onclick="createroom()">create</button> -->
-    <br>
-   
-    Name : <input type="text" id="name"><button onclick="joinroom()" id="btn_join">join</button>
-    <ul id="messages"></ul>
-    <textarea name="" id="input" cols="30" rows="10"></textarea>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-8 col-lg-6 mx-auto">
+                <div class="row">
+                    <div class="col">
+                        chat socket nodejs
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        Room ID: <input type="text" class="form-control" id="createroom_id">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        Name : <input type="text" class="form-control" id="name">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <button  class="btn btn-warning" onclick="joinroom()" id="btn_join">join</button>
+                       
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <div id="messages" class="bg-light p-3">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <textarea class="form-control" name="" id="input" cols="30" rows="10"></textarea>
+                        <br>
+
+                        <button class="btn btn-primary" onclick="send()" id="btn_send">send</button>
+                    </div>
+                </div>
+           
+            </div>
+        </div>
+    </div>
     
-    <!-- <input type="text" id="input"> -->
-    <button onclick="send()" id="btn_send">send</button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js" integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script>
         var socket = io();
         var input = document.getElementById('input');
@@ -72,25 +101,27 @@
             }
             console.log('joining')
             socket.emit('Create room ID', data, (response) => {
-                console.log(response.status);
                 if (response.status == 200) {
                     document.getElementById('createroom_id').disabled = true;
                     document.getElementById('btn_join').disabled = true;
                     document.getElementById('name').disabled = true;
                 }
             });
+            
             console.log("Joined");
             socket.on(room, function (res) {
-                var item = document.createElement('li');
-                var textarea = document.createElement('textarea');
-                textarea.textContent = `${res.msg}`;
-                textarea.disabled = true;
+                var item = document.createElement('div');
                 var div_name = document.createElement('div');
-                div_name.textContent = `${res.name} : `;
-                div_name.appendChild(textarea);
+                var div_msg = document.createElement('div');
+                div_name.innerHTML = `${res.name} : `;
+                div_msg.innerHTML = ` ${res.msg}`;
+                item.classList.add('d-flex');
                 item.appendChild(div_name);
+                item.appendChild(div_msg);
                 message.appendChild(item);
-                window.scrollTo(0, document.body.scrollHeight);
+
+                // scroll messages
+                message.scrollTop = message.scrollHeight;
                 console.log("received :", res)
             });
         }
